@@ -13,6 +13,11 @@
 <canvas id="myCanvas" width="480" height="320"></canvas>
 
 <script>
+    function random_brick_color()
+{
+    var r = function () { return Math.floor(Math.random()*246) };
+    return "rgb(" + r() + "," + r() + "," + r() + ")";
+}
     function get_random_color2() 
 {
     var r = function () { return Math.floor(Math.random()*256) };
@@ -72,7 +77,7 @@ function drawBricks() {
                 bricks[c][r].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = "#0095DD";
+                ctx.fillStyle = ballColor // "#0095DD";
                 ctx.fill();
                 ctx.closePath();
             }
@@ -166,7 +171,7 @@ function drawScore() {
     ctx.fillText("Score: "+score, 8, 20);
 }
 
-var interval = setInterval(draw, 10);
+var interval = setInterval(draw, 12);
 
 
 
