@@ -113,7 +113,6 @@ function draw() {
             if(!lives) {
                 alert("GAME OVER");
                 document.location.reload();
-                clearInterval(interval); // Needed for Chrome to end game
             }
             else {
                 x = canvas.width/2;
@@ -137,7 +136,9 @@ function draw() {
         paddleX = 0;
     }
 }
+requestAnimationFrame(draw);
 }
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mouseMoveHandler, false);
@@ -177,7 +178,6 @@ function collisionDetection() {
                     if(score == brickRowCount*brickColumnCount) {
                         alert("YOU WIN, CONGRATULATIONS!");
                         document.location.reload();
-                        clearInterval(interval); // Needed for Chrome to end game
                 }
             }
         }
@@ -194,7 +194,8 @@ function drawLives() {
     ctx.fillStyle = "#0095DD";
     ctx.fillText("Lives: "+lives, canvas.width-65, 20);
 }
-var interval = setInterval(draw, 12);
+draw();
+
 
 
 
