@@ -32,16 +32,20 @@ function hexToRgb(hex) {
 }
 
 function rgbComplimentary(r, g, b) {
-  let r2 = r/255.0, g2 = g/255.0, b2 = b/255.0;
+  let r2 = r / 255.0;
+  let g2 = g / 255.0;
+  let b2 = b / 255.0;
 
-  let max = Math.max(r2, g2, b2);
-  let min = Math.min(r2, g2, b2);
-  let h, s, l = (max + min) / 2.0;
+  const max = Math.max(r2, g2, b2);
+  const min = Math.min(r2, g2, b2);
+  let h = (max + min) / 2.0;
+  let s = (max + min) / 2.0;
+  let l = (max + min) / 2.0;
 
   if (max === min) {
     h = s = 0; //achromatic
   } else {
-    var d = max - min;
+    let d = max - min;
     s = (l > 0.5 ? d / (2.0 - max - min) : d / (max + min));
 
     if (max === r2 && g2 >= b2) {
@@ -67,17 +71,17 @@ function rgbComplimentary(r, g, b) {
   if (s === 0) {
     r2 = g2 = b2 = l; // achromatic
   } else {
-    var hue2rgb = function hue2rgb(p, q, t) {
-      if(t < 0) t += 1;
-      if(t > 1) t -= 1;
-      if(t < 1 / 6) return p + (q - p) * 6 * t;
-      if(t < 1 / 2) return q;
-      if(t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    let hue2rgb = function hue2rgb(p, q, t) {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
       return p;
     };
 
-    var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    var p = 2 * l - q;
+    let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    let p = 2 * l - q;
 
     r2 = hue2rgb(p, q, h + 1 / 3);
     g2 = hue2rgb(p, q, h);
@@ -89,7 +93,7 @@ function rgbComplimentary(r, g, b) {
   b2 = Math.round(b * 255);
 
   // Convert r b and g values to hex
-  rgb = b2 | (g2 << 8) | (r2 << 16);
+  rgb = b | (g << 8) | (r << 16);
   return hexToRgb("#" + (0x1000000 | rgb).toString(16).substring(1));
 }
 console.log('>>>> 0 >>>>', rgbComplimentary);
@@ -97,7 +101,7 @@ console.log('>>>> 0 >>>>', rgbComplimentary);
 
 console.log('--------------------------');
 const color = getRandomColor();
-console.log(color);
+console.log("###", color);
 // const compliment = rgbComplimentary(100,150,150);
 // console.log("***", compliment);
 
@@ -106,141 +110,149 @@ const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
 
 
+// ------------------------------------------------------
+
+
 const ballRadius = 10;
 let x = canvas.width / 2;
 let y = canvas.height - 30;
 let dx = 2;
 let dy = -2;
 
-const ball = {
-  x: canvas.width / 2,
-  y: canvas.height - 30,
-  radius: 10,
-  dx: 3,
-  dy: -3,
-  move: () => {
-    this.x += this.dx;
-    this.y -= this.dy;
-  },
-};
+// const ball = {
+//   x: canvas.width / 2,
+//   y: canvas.height - 30,
+//   radius: 10,
+//   dx: 3,
+//   dy: -3,
+//   move: () => {
+//     this.x += this.dx;
+//     this.y -= this.dy;
+//   },
+// };
 
-ball.move();
+// ball.move();
 
-const paddleHeight = 10;
-const paddleWidth = 75;
+// Belong to Paddle
+// const paddleHeight = 10;
+// const paddleWidth = 75;
+
+
+
+// Belong to Brick
+// const brickWidth = 75;
+// const brickHeight = 20;
+
+
 const brickRowCount = 3;
 const brickColumnCount = 5;
-const brickWidth = 75;
-const brickHeight = 20;
 const brickPadding = 10;
 const brickOffsetTop = 30;
 const brickOffsetLeft = 30;
 const bricks = [];
-
+``
+let ballColor = getRandomColor();
+let backgroundColor = drawBackground();
 
 // ------- Game ---------
 const game = {
   ctx: canvas.getContext('2d'),
-  paddleHeight: 10,
-  paddleWidth: 75,
+  // paddleHeight: 10,
+  // paddleWidth: 75,
   brickRowCount: 3,
   brickColumnCount: 5,
-  brickWidth: 75,
-  brickHeight: 20,
+  // brickWidth: 75,
+  // brickHeight: 20,
   brickPadding: 10,
   brickOffsetTop: 30,
   brickOffsetLeft: 30,
-  bricks: [],
+  bricks: new Brick(x, y, ballColor),
+  ball: new Ball(),
+  paddle: new Paddle(canvas.width / 2, canvas.height - 10),
   draw() {
-    this.drawBall();
+    this.canvas.clearRect(0, 0, canvas.width, canvas.height);
+    this.canvas.drawBackground();
+    this.ball.move();
+    this.ball.render(ctx);
+    this.paddle.render(ctx);
+    this.bricks.render(ctx);
+    this.collisionDetection();
+    this.drawScore();
+    this.drawLives();
   },
-  drawBall() {
-    this.ctx.beginPath();
-    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-    ctx.fillStyle = ballColor;
-    ctx.fill();
-    ctx.closePath();
-  },
+  // drawBall() {
+  //   this.ctx.beginPath();
+  //   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+  //   ctx.fillStyle = ballColor;
+  //   ctx.fill();
+  //   ctx.closePath();
+  // },
 };
 // -------- Game ----------
 
-let ballColor = getRandomColor();
-let backgroundColor = drawBackground();
 
 console.log('>>> 1 >>>', ballColor);
 // console.log('>>>>', backgroundColor);
 
-let paddleX = (canvas.width - paddleWidth) / 2;
+let paddleX = (canvas.width - 75) / 2;
 let rightPressed = false;
 let leftPressed = false;
 let score = 0;
 let lives = 3;
 
-for (let c = 0; c < brickColumnCount; c += 1) {
-  bricks[c] = [];
-  for (let r = 0; r < brickRowCount; r += 1) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
-  }
-}
-
-function drawBall() {
-  ctx.beginPath();
-  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-  ctx.fillStyle = ballColor;
-  ctx.fill();
-  ctx.closePath();
-}
-
-function drawPaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - game.paddleHeight, game.paddleWidth, game.paddleHeight);
-  ctx.fillStyle = 'black';
-  ctx.fill();
-  ctx.closePath();
-}
-
 function drawBricks() {
   for (let c = 0; c < brickColumnCount; c += 1) {
+    game.bricks[c] = [];
     for (let r = 0; r < brickRowCount; r += 1) {
       if (bricks[c][r].status === 1) {
-        const brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
-        const brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
-        bricks[c][r].x = brickX;
-        bricks[c][r].y = brickY;
-        ctx.beginPath();
-        ctx.rect(brickX, brickY, brickWidth, brickHeight);
-        ctx.fillStyle = ballColor;// "#0095DD";
-        ctx.fill();
-        ctx.closePath();
+        const brickX = (c * (game.brickWidth + brickPadding)) + brickOffsetLeft;
+        const brickY = (r * (game.brickHeight + brickPadding)) + brickOffsetTop;
+        bricks[c][r] = new Brick(brickX, brickY, ballColor);
+        bricks[c][r].render(ctx);
       }
     }
   }
 }
 
+// function drawBall() {
+//   ctx.beginPath();
+//   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+//   ctx.fillStyle = ballColor;
+//   ctx.fill();
+//   ctx.closePath();
+// }
+
+// function drawPaddle() {
+//   ctx.beginPath();
+//   ctx.rect(paddleX, canvas.height - game.paddleHeight, game.paddleWidth, game.paddleHeight);
+//   ctx.fillStyle = 'black';
+//   ctx.fill();
+//   ctx.closePath();
+// }
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
-  drawBall();
-  drawPaddle();
   collisionDetection();
   drawBricks();
   drawScore();
   drawLives();
-  ball.x += ball.dx;
-  ball.y += ball.dy;
+  // ball.x += ball.dx;
+  // ball.y += ball.dy;
 
-  if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
-    ball.dx = -ball.dx;
+  if (this.ball.x + this.ball.dx > canvas.width - this.ball.radius
+    || this.ball.x + this.ball.dx < this.ball.radius) {
+    this.ball.dx = -this.ball.dx;
     ballColor = getRandomColor();
     backgroundColor = drawBackground();
   }
-  if (ball.y + ball.dy < ball.radius) {
-    ball.dy = -ball.dy;
+  if (this.ball.y + this.ball.dy < this.ball.radius) {
+    this.ball.dy = -this.ball.dy;
     ballColor = getRandomColor();
     backgroundColor = drawBackground();
-  } else if (ball.y + ball.dy > canvas.height - ball.radius) {
-    if (ball.x > paddleX && ball.x < paddleX + paddleWidth) {
-      ball.dy = -ball.dy;
+  } else if (this.ball.y + this.ball.dy > canvas.height - this.ball.radius) {
+    if (this.ball.x > paddleX && this.ball.x < paddleX + 75) {
+      this.ball.dy = -this.ball.dy;
       ballColor = getRandomColor();
       backgroundColor = drawBackground();
     } else {
@@ -249,17 +261,17 @@ function draw() {
         alert('GAME OVER');
         document.location.reload();
       } else {
-        ball.x = canvas.width / 2;
-        ball.y = canvas.height - 30;
-        ball.dx = 2;
-        ball.dy = -2;
-        paddleX = (canvas.width - paddleWidth) / 2;
+        this.ball.x = canvas.width / 2;
+        this.ball.y = canvas.height - 30;
+        this.ball.dx = 2;
+        this.ball.dy = -2;
+        paddleX = (canvas.width - 75) / 2;
       }
     }
   } if (rightPressed) {
     paddleX += 7;
-    if (paddleX + paddleWidth > canvas.width) {
-      paddleX = canvas.width - paddleWidth;
+    if (paddleX + 75 > canvas.width) {
+      paddleX = canvas.width - 75;
     }
   } else if (leftPressed) {
     paddleX -= 7;
@@ -277,7 +289,7 @@ document.addEventListener('mousemove', mouseMoveHandler, false);
 function mouseMoveHandler(e) {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
-    paddleX = relativeX - paddleWidth / 2;
+    paddleX = relativeX - 75 / 2;
   }
 }
 
@@ -302,14 +314,15 @@ function keyUpHandler(e) {
 function collisionDetection() {
   for (let c = 0; c < brickColumnCount; c += 1) {
     for (let r = 0; r < brickRowCount; r += 1) {
-      const b = bricks[c][r];
+      const b = game.bricks[c][r];
       if (b.status === 1) {
-        if (ball.x > b.x && ball.x < b.x + brickWidth && ball.y > b.y && ball.y < b.y + brickHeight) 
+        if (this.ball.x > b.x && this.ball.x < b.x + 75
+          && this.ball.y > b.y && this.ball.y < b.y + 20)
         {
-          ball.dy = -ball.dy;
+          this.ball.dy = -this.ball.dy;
           b.status = 0;
           ballColor = getRandomColor();
-          backgroundColor = drawBackground();
+          drawBackground();
           score += 1;
           if (score === brickRowCount * brickColumnCount) {
             alert('YOU WIN, CONGRATULATIONS!');
@@ -324,8 +337,11 @@ function collisionDetection() {
 function drawBackground() {
   let rgb_value = parseRgb(ballColor);
   let compliment = rgbComplimentary(rgb_value[0], rgb_value[1], rgb_value[2]);
-  ctx.fillStyle = compliment;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = compliment;
+  ctx.fill();
+  console.log('***', ballColor);
+  console.log('&&&', compliment);
 }
 
 function drawScore() {
