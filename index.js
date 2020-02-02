@@ -97,7 +97,6 @@ function rgbComplimentary(r, g, b) {
   return hexToRgb("#" + (0x1000000 | rgb).toString(16).substring(1));
 }
 
-
 console.log('--------------------------');
 const color = getRandomColor();
 console.log('###', color);
@@ -174,15 +173,16 @@ const game = {
   ball: new Ball(),
   paddle: new Paddle(canvas.width / 2, canvas.height - 10),
   draw() {
-    this.canvas.clearRect(0, 0, canvas.width, canvas.height);
-    this.canvas.drawBackground();
+    console.log('whats up');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // this.canvas.drawBackground();
     this.ball.move();
     this.ball.render(ctx);
     this.paddle.render(ctx);
     this.bricks.render(ctx);
-    this.collisionDetection();
-    this.drawScore();
-    this.drawLives();
+    collisionDetection(ctx);
+    drawScore(ctx);
+    drawLives(ctx);
   },
   // drawBall() {
   //   this.ctx.beginPath();
@@ -235,15 +235,15 @@ function drawBricks() {
 //   ctx.closePath();
 // }
 
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // drawBackground(color);
-  collisionDetection();
-  console.log('about to call drawBricks');
-  drawBricks();
-  console.log('back from drawBricks')
-  drawScore();
-  drawLives();
+// function draw() {
+//   ctx.clearRect(0, 0, canvas.width, canvas.height);
+//   // drawBackground(color);
+//   collisionDetection();
+//   console.log('about to call drawBricks');
+//   drawBricks();
+//   console.log('back from drawBricks')
+//   drawScore();
+//   drawLives();
   // ball.x += ball.dx;
   // ball.y += ball.dy;
 
@@ -286,8 +286,8 @@ function draw() {
       paddleX = 0;
     }
   }
-  requestAnimationFrame(draw);
-}
+  requestAnimationFrame(game.draw);
+// }
 
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
@@ -364,4 +364,4 @@ function drawLives() {
   ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
 }
 
-draw();
+game.draw();
