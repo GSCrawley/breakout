@@ -28,21 +28,21 @@ class Sprite {
   }
 }
 
-// Ball class 
+// Ball class
 class Ball extends Sprite {
-  constructor(x, y, radius = 10, color = 'red') {
+  constructor(x, y, radius = 10, color = 'black') {
     super(x, y);
-    this.x = 230;
-    this.y = 460;
+    this.x = x - 30;
+    this.y = y / 2;
     this.dx = 1;
     this.dy = -1;
     this.radius = radius;
     this.ballColor = color;
   }
 
-  move(x, y) {
+  move() {
     this.x += this.dx;
-    this.y -= this.dy;
+    this.y += this.dy;
   }
 
   render(ctx) {
@@ -54,8 +54,8 @@ class Ball extends Sprite {
   }
 }
 
-const b1 = new Ball(100, 30, 10, this.ballColor);
-const b2 = new Ball(120, 50, 15);
+// const b1 = new Ball(100, 30, 10, this.ballColor);
+// const b2 = new Ball(120, 50, 15);
 
 
 // Paddle class --------
@@ -71,7 +71,7 @@ class Paddle extends Sprite {
 
   render(ctx) {
     ctx.beginPath();
-    ctx.rect(this.x, this.y, this.width, this.height);
+    ctx.rect(this.x, canvas.height - this.height, this.width, this.height);
     ctx.fillStyle = 'black';
     ctx.fill();
     ctx.closePath();
@@ -129,22 +129,6 @@ class Lives extends Sprite {
   }
 }
 
-
-// const ball = {
-//   x: canvas.width / 2,
-//   y: canvas.height - 30,
-//   radius: 10,
-//   dx: 3,
-//   dy: -3,
-//   move: () => {
-//     this.x += this.dx;
-//     this.y -= this.dy;
-//   },
-// };
-
-
-
-
 // ----------------------
 // ------- Game ---------
 // =========================================================================
@@ -152,30 +136,32 @@ class Lives extends Sprite {
 class Game {
   constructor() {
     this.ctx = canvas.getContext('2d');
-    this.brickRowCount = 3;
+    this.brickRowCount = 5;
     this.brickColumnCount = 5;
     this.brickWidth = 75;
     this.brickHeight = 20;
     this.brickPadding = 10;
     this.brickOffsetTop = 30;
     this.brickOffsetLeft = 30;
+    this.rightPressed = false;
+    this.leftPressed = false;
     const [ballColor, backgroundColor] = getRandomColor();
     console.log(ballColor, backgroundColor);
     this.backgroundColor = backgroundColor;
     this.ballColor = ballColor;
-    this.ball = new Ball(100, 30, 10, ballColor);
-    this.paddle = new Paddle(canvas.width / 2, canvas.height - 10);
+    this.ball = new Ball(canvas.width / 2, canvas.height - 30);
+    this.paddle = new Paddle((canvas.width - 75) / 2, canvas.height + 10);
     this.scoreLabel = new Score(30, 120, '16px Arial', 'white');
     this.livesLabel = new Lives(120, 30, '16px Arial', 'white');
-
-    this.score = 0
-    this.lives = 3
+    this.paddleX = (canvas.width - 75) / 2;
+    this.score = 0;
+    this.lives = 3;
 
     this.initBricks();
+    this.collisionDetection();
+    console.log(this.bricks);
 
-    console.log(this.bricks)
-
-    this.draw()
+    this.draw();
   }
 
   initBricks() {
@@ -186,7 +172,7 @@ class Game {
         // bricks[c][r] = { x: 0, y: 0, status: 1 };
         const x = (c * (this.brickWidth + this.brickPadding)) + this.brickOffsetLeft;
         const y = (r * (this.brickHeight + this.brickPadding)) + this.brickOffsetTop;
-        console.log(x, y, this.brickWidth, this.brickPadding, this.brickOffsetLeft)
+        console.log(x, y, this.brickWidth, this.brickPadding, this.brickOffsetLeft);
         this.bricks[c][r] = new Brick(x, y, this.ballColor);
       }
     }
@@ -202,6 +188,29 @@ class Game {
     }
   }
 
+  collisionDetection() {
+    for (let c = 0; c < this.brickColumnCount; c += 1) {
+      for (let r = 0; r < this.brickRowCount; r += 1) {
+        const b = this.bricks[c][r];
+        // console.log(game);
+        if (b.status === 1) {
+          if (this.ball.x > b.x && this.ball.x < b.x + 75
+            && this.ball.y > b.y && this.ball.y < b.y + 20) {
+            this.ball.dy = -this.ball.dy;
+            b.status = 0;
+            // getRandomColor();
+            // drawBackground();
+            this.score += 1;
+            if (this.score === this.brickRowCount * this.brickColumnCount) {
+              alert('YOU WIN, CONGRATULATIONS!');
+              document.location.reload();
+            }
+          }
+        }
+      }
+    }
+  }
+
   draw() {
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -210,14 +219,14 @@ class Game {
     this.ball.render(ctx);
     this.paddle.render(ctx);
     this.drawBricks(ctx);
-    collisionDetection(ctx);
+    this.collisionDetection(ctx);
     this.scoreLabel.render(ctx, this.score);
     // drawLives(ctx);
     this.livesLabel.render(ctx, this.lives);
 
     requestAnimationFrame(() => {
-      this.draw()
-    })
+      this.draw();
+    });
   }
 }
 
@@ -226,13 +235,6 @@ class Game {
 const game = new Game();
 
 // -------- Game ----------
-
-
-let paddleX = (canvas.width - 75) / 2;
-let rightPressed = false;
-let leftPressed = false;
-let score = 0;
-let lives = 3;
 
 
 if (game.ball.x + game.ball.dx > canvas.width - game.ball.radius
@@ -247,13 +249,13 @@ if (game.ball.y + game.ball.dy < game.ball.radius) {
   getRandomColor();
   // backgroundColor = drawBackground();
 } else if (game.ball.y + game.ball.dy > canvas.height - game.ball.radius) {
-  if (game.ball.x > paddleX && game.ball.x < paddleX + 75) {
+  if (game.ball.x > game.paddleX && game.ball.x < game.paddleX + 75) {
     game.ball.dy = -game.ball.dy;
     getRandomColor();
     // backgroundColor = drawBackground();
   } else {
-    lives -= 1;
-    if (!lives) {
+    game.lives -= 1;
+    if (!game.lives) {
       alert('GAME OVER');
       document.location.reload();
     } else {
@@ -261,18 +263,18 @@ if (game.ball.y + game.ball.dy < game.ball.radius) {
       game.ball.y = canvas.height - 30;
       game.ball.dx = 2;
       game.ball.dy = -2;
-      paddleX = (canvas.width - 75) / 2;
+      game.paddleX = (canvas.width - 75) / 2;
     }
   }
-} if (rightPressed) {
-  paddleX += 7;
-  if (paddleX + 75 > canvas.width) {
-    paddleX = canvas.width - 75;
+} if (game.rightPressed) {
+  game.paddleX += 7;
+  if (game.paddleX + 75 > canvas.width) {
+    game.paddleX = canvas.width - 75;
   }
-} else if (leftPressed) {
-  paddleX -= 7;
-  if (paddleX < 0) {
-    paddleX = 0;
+} else if (game.leftPressed) {
+  game.paddleX -= 7;
+  if (game.paddleX < 0) {
+    game.paddleX = 0;
   }
 }
 requestAnimationFrame(() => {
@@ -283,25 +285,25 @@ requestAnimationFrame(() => {
 function mouseMoveHandler(e) {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
-    paddleX = relativeX - 75 / 2;
+    game.paddleX = relativeX - 75 / 2;
   }
 }
 
 function keyDownHandler(e) {
   if (e.key === 'Right' || e.key === 'ArrowRight') {
-    rightPressed = true;
+    game.rightPressed = true;
 }
   else if (e.key === 'Left' || e.key === 'ArrowLeft') {
-    leftPressed = true;
+    game.leftPressed = true;
   }
 }
 
 function keyUpHandler(e) {
   if (e.key === 'Right' || e.key === 'ArrowRight') {
-    rightPressed = false;
+    game.rightPressed = false;
   }
   else if (e.key === 'Left' || e.key === 'ArrowLeft') {
-    leftPressed = false;
+    game.leftPressed = false;
   }
 }
 
@@ -309,28 +311,6 @@ document.addEventListener('keydown', this.keyDownHandler, false);
 document.addEventListener('keyup', this.keyUpHandler, false);
 document.addEventListener('mousemove', this.mouseMoveHandler, false);
 
-function collisionDetection() {
-  for (let c = 0; c < this.brickColumnCount; c += 1) {
-    for (let r = 0; r < this.brickRowCount; r += 1) {
-      const b = this.bricks[c][r];
-      // console.log(game);
-      if (b.status === 1) {
-        if (game.ball.x > b.x && game.ball.x < b.x + 75
-          && game.ball.y > b.y && game.ball.y < b.y + 20) {
-          game.ball.dy = -game.ball.dy;
-          b.status = 0;
-          // getRandomColor();
-          // drawBackground();
-          score += 1;
-          if (score === this.brickRowCount * this.brickColumnCount) {
-            alert('YOU WIN, CONGRATULATIONS!');
-            document.location.reload();
-          }
-        }
-      }
-    }
-  }
-}
 
 // function drawBackground() {
 //   let rgb_value = parseRgb(ballColor);
