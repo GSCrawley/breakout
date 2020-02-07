@@ -32,7 +32,6 @@ requestAnimationFrame(() => {
   game.draw();
 });
 
-
 game.draw();
 
-export { getRandomColor, canvas, ctx }
+export { getRandomColor, canvas, ctx };

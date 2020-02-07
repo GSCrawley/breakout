@@ -12,13 +12,11 @@ import Lives from './Lives';
 import Score from './Score';
 
 // ***************************************************
-
 class Game extends Sprite {
-
   // -------------------------------------------------
   constructor(x, y) {
     super(x, y);
-    this.canvas = document.getElementById('myCanvas')
+    this.canvas = document.getElementById('myCanvas');
     this.ctx = canvas.getContext('2d');
     this.brickRowCount = 5;
     this.brickColumnCount = 5;
@@ -73,7 +71,7 @@ class Game extends Sprite {
     }
   }
 
-  //Changes color of bricks when hit with ball
+  // Changes color of bricks when hit with ball
 
   changeBrickColor(color) {
     for (let c = 0; c < this.brickColumnCount; c += 1) {
@@ -111,7 +109,7 @@ class Game extends Sprite {
   }
 
   // -------------------------------------
-//Handles left and right paddle keys
+// Handles left and right paddle keys
 
   keyDownHandler(e) {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
@@ -132,7 +130,7 @@ class Game extends Sprite {
   }
 
   // --------------------------------------
-//Handles mouse sensor
+// Handles mouse sensor
 
   mouseMoveHandler(e) {
     const relativeX = e.clientX - canvas.offsetLeft;
@@ -174,24 +172,19 @@ class Game extends Sprite {
       if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) {
         this.ball.dy = -this.ball.dy;
       }
-       
-        getRandomColor();
-        // backgroundColor = drawBackground();
+      getRandomColor();
+    } else {
+      this.lives -= 1;
+      if (!this.lives) {
+        alert('GAME OVER');
+        document.location.reload();
       } else {
-        // console.log('hello');
-        // this.paddle.width += 15;
-        this.lives -= 1;
-        if (!this.lives) {
-          alert('GAME OVER');
-          document.location.reload();
-        } else {
-          this.ball.x = canvas.width / 2;
-          this.ball.y = canvas.height - 30;
-          this.ball.dx = 1;
-          this.ball.dy = -1;
-          // console.log(this.paddle.x);
-          this.paddle.x = (canvas.width - 75) / 2;
-        }
+        this.ball.x = canvas.width / 2;
+        this.ball.y = canvas.height - 30;
+        this.ball.dx = 1;
+        this.ball.dy = -1;
+        // console.log(this.paddle.x);
+        this.paddle.x = (canvas.width - 75) / 2;
       }
     }
     if (this.rightPressed && this.paddle.x < canvas.width - this.paddle.width) {
@@ -201,9 +194,8 @@ class Game extends Sprite {
     }
     this.ball.x += this.ball.dx;
     this.ball.y += this.ball.dy;
-    
+
     requestAnimationFrame(() => {
-      
       this.draw();
     });
   }
