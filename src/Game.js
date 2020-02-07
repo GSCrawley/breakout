@@ -33,13 +33,13 @@ class Game extends Sprite {
     this.backgroundColor = backgroundColor;
     this.ballColor = ballColor;
     this.ball = new Ball(canvas.width / 2, canvas.height - 30);
-    const paddleWidth = 110;
+    const paddleWidth = 90;
     const paddleX = (this.canvas.width - paddleWidth) / 2;
     this.paddle = new Paddle(paddleX, 0, 'black', paddleWidth);
     this.scoreLabel = new Score(30, 120, '16px Arial', 'white');
     this.livesLabel = new Lives(120, 30, '16px Arial', 'white');
     this.score = 0;
-    this.lives = 999;
+    this.lives = 5;
 
     this.initBricks();
     this.draw();
@@ -61,6 +61,7 @@ class Game extends Sprite {
   }
 
   // -----------------------------
+// Draws Bricks
 
   drawBricks() {
     for (let c = 0; c < this.brickColumnCount; c += 1) {
@@ -72,6 +73,8 @@ class Game extends Sprite {
     }
   }
 
+  //Changes color of bricks when hit with ball
+
   changeBrickColor(color) {
     for (let c = 0; c < this.brickColumnCount; c += 1) {
       for (let r = 0; r < this.brickRowCount; r += 1) {
@@ -81,6 +84,7 @@ class Game extends Sprite {
     }
   }
   // -----------------------------
+// Detects when ball collides with walls, paddle, or bricks
 
   collisionDetection() {
     for (let c = 0; c < this.brickColumnCount; c += 1) {
@@ -107,6 +111,7 @@ class Game extends Sprite {
   }
 
   // -------------------------------------
+//Handles left and right paddle keys
 
   keyDownHandler(e) {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
@@ -127,6 +132,7 @@ class Game extends Sprite {
   }
 
   // --------------------------------------
+//Handles mouse sensor
 
   mouseMoveHandler(e) {
     const relativeX = e.clientX - canvas.offsetLeft;
@@ -141,7 +147,7 @@ class Game extends Sprite {
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     // this.canvas.drawBackground();
-    this.ball.move(2, 2);
+    this.ball.move(1, 1);
     this.ball.render(this.ctx);
     this.paddle.render(this.ctx, this.canvas);
     this.drawBricks(this.ctx);
@@ -167,6 +173,8 @@ class Game extends Sprite {
     } else if (this.ball.y + this.ball.dy > canvas.height - this.ball.radius) {
       if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) {
         this.ball.dy = -this.ball.dy;
+      }
+       
         getRandomColor();
         // backgroundColor = drawBackground();
       } else {
@@ -193,19 +201,12 @@ class Game extends Sprite {
     }
     this.ball.x += this.ball.dx;
     this.ball.y += this.ball.dy;
-    // if (this.rightPressed && this.paddle.x < canvas.width - 75) {
-    //   this.paddle.x += 7;
-    // } else if (this.leftPressed && this.paddle.x > 0) {
-    //   this.paddle.x -= 7;
-    // }
-
+    
     requestAnimationFrame(() => {
       
       this.draw();
     });
   }
-
-  // -------------------------
 }
 
 // *******************************************************
