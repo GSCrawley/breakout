@@ -58,7 +58,7 @@ class Game extends Sprite {
   }
 
   // -----------------------------
-// Draws Bricks
+  // Draws Bricks
 
   drawBricks() {
     for (let c = 0; c < this.brickColumnCount; c += 1) {
@@ -81,7 +81,7 @@ class Game extends Sprite {
     }
   }
   // -----------------------------
-// Detects when ball collides with walls, paddle, or bricks
+  // Detects when ball collides with walls, paddle, or bricks
 
   collisionDetection() {
     for (let c = 0; c < this.brickColumnCount; c += 1) {
@@ -108,7 +108,7 @@ class Game extends Sprite {
   }
 
   // -------------------------------------
-// Handles left and right paddle keys
+  // Handles left and right paddle keys
 
   keyDownHandler(e) {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
@@ -129,7 +129,7 @@ class Game extends Sprite {
   }
 
   // --------------------------------------
-// Handles mouse sensor
+  // Handles mouse sensor
 
   mouseMoveHandler(e) {
     const relativeX = e.clientX - canvas.offsetLeft;
@@ -159,7 +159,7 @@ class Game extends Sprite {
 
     if (this.ball.x + this.ball.dx > this.canvas.width - this.ball.radius
       || this.ball.x + this.ball.dx < this.ball.radius) {
-        console.log('AAAAA')
+      console.log('AAAAA')
       this.ball.dx = -this.ball.dx;
       console.log('something is happening');
       getRandomColor();
@@ -170,22 +170,23 @@ class Game extends Sprite {
       getRandomColor();
       // backgroundColor = drawBackground();
     } else if (this.ball.y + this.ball.dy > this.canvas.height - this.ball.radius) {
-        getRandomColor();
-        if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) {
-          this.ball.dy = -this.ball.dy;
-        } else {
-          console.log('?????????');
-          this.lives -= 1;
-      if (!this.lives) {
-        alert('GAME OVER');
-        document.location.reload();
+      getRandomColor();
+      if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) {
+        this.ball.dy = -this.ball.dy;
       } else {
-        this.ball.x = this.canvas.width / 2;
-        this.ball.y = this.canvas.height - 30;
-        this.ball.dx = 1;
-        this.ball.dy = -1;
-        // console.log(this.paddle.x);
-        this.paddle.x = (this.canvas.width - 75) / 2;
+        console.log('?????????');
+        this.lives -= 1;
+        if (!this.lives) {
+          alert('GAME OVER');
+          document.location.reload();
+        } else {
+          this.ball.x = this.canvas.width / 2;
+          this.ball.y = this.canvas.height - 30;
+          this.ball.dx = 1;
+          this.ball.dy = -1;
+          // console.log(this.paddle.x);
+          this.paddle.x = (this.canvas.width - 75) / 2;
+        }
       }
     }
     if (this.rightPressed && this.paddle.x < this.canvas.width - this.paddle.width) {
@@ -205,3 +206,4 @@ class Game extends Sprite {
 // *******************************************************
 
 export default Game;
+

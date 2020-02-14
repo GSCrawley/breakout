@@ -8,8 +8,7 @@
 // /* eslint-disable vars-on-top */
 
 
-import Game from './Game'
-
+import Game from './Game';
 
 function getRandomColor() {
   const h = Math.floor(Math.random() * 256);
