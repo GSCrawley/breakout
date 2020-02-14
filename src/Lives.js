@@ -12,6 +12,7 @@ class Lives extends Sprite {
   }
 
   render(ctx, lives) {
+    this.lives = 3;
     ctx.font = this.font;
     ctx.fillStyle = this.fillStyle;
     ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);

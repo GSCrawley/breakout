@@ -13,7 +13,6 @@ import Score from './Score';
 
 // ***************************************************
 class Game extends Sprite {
-  // -------------------------------------------------
   constructor(x, y) {
     super(x, y);
     this.canvas = document.getElementById('myCanvas');
@@ -37,7 +36,7 @@ class Game extends Sprite {
     this.scoreLabel = new Score(30, 120, '16px Arial', 'white');
     this.livesLabel = new Lives(120, 30, '16px Arial', 'white');
     this.score = 0;
-    this.lives = 5;
+    this.lives = 3;
 
     this.initBricks();
     this.draw();
@@ -143,7 +142,7 @@ class Game extends Sprite {
 
   draw() {
     ctx.fillStyle = this.backgroundColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     // this.canvas.drawBackground();
     this.ball.move(1, 1);
     this.ball.render(this.ctx);
@@ -158,36 +157,38 @@ class Game extends Sprite {
     this.keyUpHandler(this.ctx);
     // console.log(this.rightPressed);
 
-    if (this.ball.x + this.ball.dx > canvas.width - this.ball.radius
+    if (this.ball.x + this.ball.dx > this.canvas.width - this.ball.radius
       || this.ball.x + this.ball.dx < this.ball.radius) {
+        console.log('AAAAA')
       this.ball.dx = -this.ball.dx;
-      // console.log('something is happening');
+      console.log('something is happening');
       getRandomColor();
     }
     if (this.ball.y + this.ball.dy < this.ball.radius) {
+      console.log('BBBBB')
       this.ball.dy = -this.ball.dy;
       getRandomColor();
       // backgroundColor = drawBackground();
-    } else if (this.ball.y + this.ball.dy > canvas.height - this.ball.radius) {
-      if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) {
-        this.ball.dy = -this.ball.dy;
-      }
-      getRandomColor();
-    } else {
-      this.lives -= 1;
+    } else if (this.ball.y + this.ball.dy > this.canvas.height - this.ball.radius) {
+        getRandomColor();
+        if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) {
+          this.ball.dy = -this.ball.dy;
+        } else {
+          console.log('?????????');
+          this.lives -= 1;
       if (!this.lives) {
         alert('GAME OVER');
         document.location.reload();
       } else {
-        this.ball.x = canvas.width / 2;
-        this.ball.y = canvas.height - 30;
+        this.ball.x = this.canvas.width / 2;
+        this.ball.y = this.canvas.height - 30;
         this.ball.dx = 1;
         this.ball.dy = -1;
         // console.log(this.paddle.x);
-        this.paddle.x = (canvas.width - 75) / 2;
+        this.paddle.x = (this.canvas.width - 75) / 2;
       }
     }
-    if (this.rightPressed && this.paddle.x < canvas.width - this.paddle.width) {
+    if (this.rightPressed && this.paddle.x < this.canvas.width - this.paddle.width) {
       this.paddle.x += 4;
     } else if (this.leftPressed && this.paddle.x > 0) {
       this.paddle.x -= 4;
