@@ -1,17 +1,1 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Gamedev Canvas Workshop</title>
-    <style>
-    	* { padding: 0; margin: 0; }
-    	canvas { background: #eee; display: block; margin: 0 auto; }
-    </style>
-</head>
-<body>
-
-<canvas id="myCanvas" width="480" height="480"></canvas>
-
-<script src = "bundle.js"></script>
-</body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Enhanced Breakout Game</title><link href="styles.css" rel="stylesheet"></head><body><div id="game-container"><div id="start-screen" class="visible"><h1>Enhanced Breakout</h1><p>A modernized version of the classic Breakout game with multiple levels, power-ups, and 3D graphics.</p><div><label for="player-name">Your Name:</label> <input id="player-name" placeholder="Enter your name"></div><button id="start-button">Start Game</button> <button id="leaderboard-button">View Leaderboard</button><div class="instructions"><h3>How to Play:</h3><p>Use the left/right arrow keys or mouse to move the paddle. Destroy all bricks to advance to the next level.</p><h3>Power-ups:</h3><div class="power-up-guide"><div class="power-up-item"><div class="power-up-icon widen-paddle"></div><span>Widen Paddle</span></div><div class="power-up-item"><div class="power-up-icon narrow-paddle"></div><span>Narrow Paddle</span></div><div class="power-up-item"><div class="power-up-icon slow-ball"></div><span>Slow Ball</span></div><div class="power-up-item"><div class="power-up-icon fast-ball"></div><span>Fast Ball</span></div><div class="power-up-item"><div class="power-up-icon multi-ball"></div><span>Multi-ball</span></div><div class="power-up-item"><div class="power-up-icon extra-life"></div><span>Extra Life</span></div></div><p>Press P to pause the game at any time.</p></div></div><canvas id="game-canvas" width="800" height="600" class="hidden"></canvas><div id="hud" class="hidden"><div>Score: <span id="score">0</span></div><div>Level: <span id="level">1</span></div><div>Lives: <span id="lives">3</span></div></div><div id="power-up-active" class="power-up-active hidden"><div id="power-up-active-icon" class="power-up-active-icon"></div><span id="power-up-name"></span><div class="power-up-timer"><div id="power-up-timer-fill"></div></div></div><div id="game-over-screen" class="hidden"><h2>Game Over</h2><p id="final-score">Final Score: 0</p><p id="max-level">Level Reached: 1</p><button id="restart-button">Play Again</button> <button id="leaderboard-button-end">View Leaderboard</button></div><div id="level-screen" class="hidden"><h2 id="level-complete-title">Level 1 Complete!</h2><p id="level-score">Current Score: 0</p><p>Get ready for the next challenge!</p><button id="next-level-button">Continue</button></div><div id="leaderboard-screen" class="hidden"><h2>Leaderboard</h2><table class="leaderboard"><thead><tr><th>Rank</th><th>Name</th><th>Score</th></tr></thead><tbody id="leaderboard-entries"></tbody></table><button id="close-leaderboard-button">Close</button></div></div><script src="../src/index.js"></script><script src="bundle.js"></script></body></html>
